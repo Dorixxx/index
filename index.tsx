@@ -98,10 +98,6 @@ const AppCard = ({ app }: { app: any }) => {
       <div className="content-wrapper">
         <h3 className="app-name">{app.name}</h3>
         <p className="app-desc">{app.desc}</p>
-        {/* 如果未禁用，显示实际链接的小字；如果禁用，显示提示 */}
-        <p className="app-url-preview">
-          {app.disabled ? 'Coming Soon' : new URL(app.url).hostname}
-        </p>
       </div>
     </Component>
   );
