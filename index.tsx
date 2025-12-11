@@ -10,43 +10,21 @@ const PAGE_TITLE = "米奇喵喵屋";
 // 1️⃣ 【手动配置区】适合外部网站 (Google, Baidu 等)
 // -------------------------------------------------------------------------
 const EXTERNAL_APPS = [
-  // {
-  //   id: 1,
-  //   name: "Google",
-  //   desc: "全球最大的搜索引擎",
-  //   icon: "🔍", 
-  //   url: "https://www.google.com"
-  // },
-  // {
-  //   id: 2,
-  //   name: "GitHub",
-  //   desc: "代码托管与协作平台",
-  //   icon: "🐙",
-  //   url: "https://github.com"
-  // },
-  // {
-  //   id: 3,
-  //   name: "ChatGPT",
-  //   desc: "OpenAI 智能助手",
-  //   icon: "🤖",
-  //   url: "https://chat.openai.com"
-  // },
-  // {
-  //   id: 4,
-  //   name: "哔哩哔哩",
-  //   desc: "干杯 []~(￣▽￣)~*",
-  //   icon: "📺",
-  //   url: "https://www.bilibili.com"
-  // },
+//   {
+//     id: 1,
+//     name: "Google",
+//     desc: "全球最大的搜索引擎",
+//     icon: "🔍", 
+//     url: "https://www.google.com"
+//   },
 ];
 
 // 2️⃣ 【子域名快捷区】适合您自己域名下的服务 (如 blog.xxx.com)
 // -------------------------------------------------------------------------
 // 💡 原理：如果您当前的网页地址是 nav.example.com
 // 填写 "blog" 会自动生成 -> https://blog.example.com
-// 填写 "git"  会自动生成 -> https://git.example.com
 // 
-// 如果您在本地(localhost)调试，这些链接可能无法访问，部署到正式域名后即正常。
+// 新增功能：添加 disabled: true 可设置为不可点击
 const SUBDOMAIN_APPS = [
   /* 解除注释并修改下面的内容来启用：*/
   {
@@ -64,10 +42,10 @@ const SUBDOMAIN_APPS = [
   {
     sub: "",
     name: "正在开发中", 
-    desc: "正在开发中",
-    icon: "📊"
+    desc: "即将上线，敬请期待...",
+    icon: "🚧",
+    disabled: true // 👈 添加这一行即可变为不可点击
   }
-
 ];
 
 // 3️⃣ 【高级设置】
@@ -100,9 +78,16 @@ const getRootDomain = () => {
 
 const AppCard = ({ app }: { app: any }) => {
   const isImage = app.icon.startsWith('http') || app.icon.startsWith('data:');
+  
+  // 如果是禁用状态，使用 div 替代 a 标签，防止跳转
+  const Component = app.disabled ? 'div' : 'a';
+  const hrefProps = app.disabled ? {} : { href: app.url, target: "_blank", rel: "noopener noreferrer" };
 
   return (
-    <a href={app.url} target="_blank" rel="noopener noreferrer" className="app-card">
+    <Component 
+      {...hrefProps} 
+      className={`app-card ${app.disabled ? 'disabled' : ''}`}
+    >
       <div className="icon-wrapper">
         {isImage ? (
           <img src={app.icon} alt={app.name} className="app-icon-img" />
@@ -113,10 +98,12 @@ const AppCard = ({ app }: { app: any }) => {
       <div className="content-wrapper">
         <h3 className="app-name">{app.name}</h3>
         <p className="app-desc">{app.desc}</p>
-        {/* 显示实际链接的小字，方便确认 */}
-        <p className="app-url-preview">{new URL(app.url).hostname}</p>
+        {/* 如果未禁用，显示实际链接的小字；如果禁用，显示提示 */}
+        <p className="app-url-preview">
+          {app.disabled ? 'Coming Soon' : new URL(app.url).hostname}
+        </p>
       </div>
-    </a>
+    </Component>
   );
 };
 
@@ -130,18 +117,21 @@ const App = () => {
     setRootDomain(currentRoot);
 
     // 2. 处理子域名 App
-    const processedSubApps = SUBDOMAIN_APPS.map((item, index) => {
+    const processedSubApps = SUBDOMAIN_APPS.map((item: any, index) => {
       // 如果是在 localhost，为了演示效果，我们生成 http://sub.localhost
       // 如果是正式环境，生成 https://sub.domain.com
       const protocol = window.location.protocol; 
-      const fullUrl = `${protocol}//${item.sub}.${currentRoot}`;
+      // 如果 sub 为空字符串，可能指向根域名或者无效，这里简单处理为 items.sub + root
+      const prefix = item.sub ? `${item.sub}.` : '';
+      const fullUrl = `${protocol}//${prefix}${currentRoot}`;
       
       return {
         id: `sub-${index}`,
         name: item.name,
         desc: item.desc,
         icon: item.icon,
-        url: fullUrl
+        url: fullUrl,
+        disabled: item.disabled // 传递禁用状态
       };
     });
 
@@ -231,15 +221,31 @@ const App = () => {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           border: 1px solid rgba(255, 255, 255, 0.6);
           backdrop-filter: blur(12px);
+          position: relative;
         }
 
-        .app-card:hover {
+        /* 正常卡片的 Hover 效果 */
+        .app-card:not(.disabled):hover {
           transform: translateY(-5px);
           box-shadow: var(--shadow-lg);
           background: rgba(255, 255, 255, 0.95);
           border-color: var(--primary-color);
+          cursor: pointer;
         }
 
+        /* 禁用卡片的样式 */
+        .app-card.disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background: rgba(245, 245, 245, 0.6);
+          box-shadow: none;
+          filter: grayscale(0.8);
+        }
+
+        .app-card.disabled .app-name {
+          color: #999;
+        }
+        
         .icon-wrapper {
           width: 56px;
           height: 56px;
@@ -253,9 +259,14 @@ const App = () => {
           font-size: 28px;
         }
 
-        .app-card:hover .icon-wrapper {
+        .app-card:not(.disabled):hover .icon-wrapper {
           background: #dbeafe;
           transform: scale(1.05);
+        }
+        
+        /* 禁用状态下的图标背景 */
+        .app-card.disabled .icon-wrapper {
+          background: rgba(0, 0, 0, 0.05);
         }
 
         .app-icon-img {
