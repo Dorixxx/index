@@ -9,36 +9,36 @@ const PAGE_TITLE = "米奇喵喵屋";
 
 // 1️⃣ 【手动配置区】适合外部网站 (Google, Baidu 等)
 // -------------------------------------------------------------------------
-// const EXTERNAL_APPS = [
-//   {
-//     id: 1,
-//     name: "Google",
-//     desc: "全球最大的搜索引擎",
-//     icon: "🔍", 
-//     url: "https://www.google.com"
-//   },
-//   {
-//     id: 2,
-//     name: "GitHub",
-//     desc: "代码托管与协作平台",
-//     icon: "🐙",
-//     url: "https://github.com"
-//   },
-//   {
-//     id: 3,
-//     name: "ChatGPT",
-//     desc: "OpenAI 智能助手",
-//     icon: "🤖",
-//     url: "https://chat.openai.com"
-//   },
-//   {
-//     id: 4,
-//     name: "哔哩哔哩",
-//     desc: "干杯 []~(￣▽￣)~*",
-//     icon: "📺",
-//     url: "https://www.bilibili.com"
-//   },
-// ];
+const EXTERNAL_APPS = [
+  // {
+  //   id: 1,
+  //   name: "Google",
+  //   desc: "全球最大的搜索引擎",
+  //   icon: "🔍", 
+  //   url: "https://www.google.com"
+  // },
+  // {
+  //   id: 2,
+  //   name: "GitHub",
+  //   desc: "代码托管与协作平台",
+  //   icon: "🐙",
+  //   url: "https://github.com"
+  // },
+  // {
+  //   id: 3,
+  //   name: "ChatGPT",
+  //   desc: "OpenAI 智能助手",
+  //   icon: "🤖",
+  //   url: "https://chat.openai.com"
+  // },
+  // {
+  //   id: 4,
+  //   name: "哔哩哔哩",
+  //   desc: "干杯 []~(￣▽￣)~*",
+  //   icon: "📺",
+  //   url: "https://www.bilibili.com"
+  // },
+];
 
 // 2️⃣ 【子域名快捷区】适合您自己域名下的服务 (如 blog.xxx.com)
 // -------------------------------------------------------------------------
